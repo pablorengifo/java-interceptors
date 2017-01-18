@@ -1,10 +1,16 @@
 package com.pablorens.config;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -16,12 +22,36 @@ public class ExecuteTimeInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request,
 		HttpServletResponse response, Object handler)
 	    throws Exception {
-
 		
+		Map<String, String> map = new HashMap<String, String>();
+		String pathInfo = request.getRequestURI();
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String key = (String) headerNames.nextElement();
+			String value = request.getHeader(key);
+			map.put(key, value);
+		}
+		
+		String method = request.getMethod();
 		long startTime = System.currentTimeMillis();
 		request.setAttribute("startTime", startTime);
 		logger.info("======================preHandle method=========================");
+		logger.info("method    =====>" + method);
 		logger.info("startTime =====>" + startTime);
+		logger.info("ID        =====>" + pathInfo);
+		logger.info("header    =====>" + map);
+	
+		if(method.equals("GET")){
+			@SuppressWarnings("unchecked")
+			LinkedHashMap<String,Object> restOfTheUrl =  (LinkedHashMap<String,Object>) request.getAttribute(
+			        HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+			String id = (String)restOfTheUrl.get("id");
+			logger.info("map       =====>" + restOfTheUrl);
+			logger.info("id        =====>" + id);
+		}else if(method.equals("POST")){
+			
+			
+		}
 		return true;
 	}
 
@@ -33,7 +63,7 @@ public class ExecuteTimeInterceptor extends HandlerInterceptorAdapter {
 
 		logger.info("======================postHandle method=========================");
 		long startTime = (Long)request.getAttribute("startTime");
-
+		
 		long endTime = System.currentTimeMillis();
 		logger.info("endTime =====>" + endTime);
 		long executeTime = endTime - startTime;
@@ -46,5 +76,10 @@ public class ExecuteTimeInterceptor extends HandlerInterceptorAdapter {
 		   logger.debug("[" + handler + "] executeTime : " + executeTime + "ms");
 		}
 	}
-
+	
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+			Object handler, Exception ex) throws Exception {
+		
+		System.out.println("---Request Completed---");
+	}
 }

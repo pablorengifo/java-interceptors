@@ -10,9 +10,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	
 	  @Autowired 
 	  ExecuteTimeInterceptor yourInjectedInterceptor;
+	  
+	  @Autowired
+	  JerseyFilter jerseyFilter;
 
 	  @Override
 	  public void addInterceptors(InterceptorRegistry registry) {
-	    registry.addInterceptor(yourInjectedInterceptor);
+	   // registry.addInterceptor(yourInjectedInterceptor);
+	   // registry.addInterceptor(jerseyFilter);
 	  }
 }

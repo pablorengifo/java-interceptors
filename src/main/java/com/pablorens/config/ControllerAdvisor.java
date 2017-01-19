@@ -10,19 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
-@ControllerAdvice(annotations = RestController.class)
+//@ControllerAdvice(annotations = RestController.class)
 public class ControllerAdvisor {
 	
 	private static final Logger logger = Logger.getLogger(ControllerAdvisor.class);
 	
-	@ModelAttribute
+	//@ModelAttribute
     public void addAttributes(HttpServletRequest request, HttpServletResponse response,Model model, 
     		@RequestBody String requestString, @RequestHeader(value = "User-Agent") String userAgent) {
         // do whatever you want to do on the request body and header. 
